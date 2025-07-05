@@ -17,9 +17,6 @@
 # - az identity show --name uami-testapp-infra-dev --resource-group rg-testapp-infra-dev --query clientId -o tsv
 # All resources are deployed in the same region and grouped under a single resource group.
 
-
-
-
 resource "azurerm_resource_group" "rg" {
   name     = "rg-${var.project}-${var.team}-${var.environment}"
   location = var.location
