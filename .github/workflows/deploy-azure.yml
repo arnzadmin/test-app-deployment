@@ -1,0 +1,69 @@
+
+name: Deploy Azure Infra (Dev)
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  TF_VERSION: '1.8.5'
+
+jobs:
+  terraform:
+    name: 'Terraform Provision Azure Infra'
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: false
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform/infrastructure/dev
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./terraform/infrastructure/dev
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+        working-directory: ./terraform/infrastructure/dev
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./terraform/infrastructure/dev
+
+      # Example: Trigger FE/BE deployment workflows in other repos (requires repo PAT in secrets.REPO_DISPATCH_TOKEN)
+      # - name: Trigger Frontend Deployment
+      #   uses: peter-evans/repository-dispatch@v3
+      #   with:
+      #     token: ${{ secrets.REPO_DISPATCH_TOKEN }}
+      #     repository: <your-org-or-user>/<frontend-repo>
+      #     event-type: deploy-frontend
+      #
+      # - name: Trigger Backend Deployment
+      #   uses: peter-evans/repository-dispatch@v3
+      #   with:
+      #     token: ${{ secrets.REPO_DISPATCH_TOKEN }}
+      #     repository: <your-org-or-user>/<backend-repo>
+      #     event-type: deploy-backend
