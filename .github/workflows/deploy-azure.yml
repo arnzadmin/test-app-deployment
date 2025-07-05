@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
 env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
