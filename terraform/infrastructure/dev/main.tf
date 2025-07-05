@@ -145,7 +145,7 @@ data "azurerm_client_config" "current" {}
 
 data "azurerm_user_assigned_identity" "main" {
   name                = "uami-arnz-infra-tfc"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = "rg-arnz-infra-uai-manual"
 }
 
 module "frontend_app_insights" {
