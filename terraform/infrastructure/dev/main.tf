@@ -143,7 +143,7 @@ data "azurerm_client_config" "current" {}
 #   tags                = var.tags
 # }
 
-data "azurerm_user_assigned_identity" "main" {
+data "azurerm_user_assigned_identity" "uami" {
   name                = "uami-arnz-infra-tfc"
   resource_group_name = "rg-arnz-infra-uai-manual"
 }
