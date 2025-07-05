@@ -76,8 +76,9 @@ module "frontend_app" {
   name                = "app-${var.project}-web-${var.environment}"
   linux_fx_version    = "NODE|20-lts"
   app_settings = {
-    APPINSIGHTS_INSTRUMENTATIONKEY = module.frontend_app_insights.instrumentation_key
-    WEBSITE_RUN_FROM_PACKAGE       = 1
+    APPINSIGHTS_INSTRUMENTATIONKEY        = module.frontend_app_insights.instrumentation_key
+    APPLICATIONINSIGHTS_CONNECTION_STRING = module.frontend_app_insights.connection_string
+    WEBSITE_RUN_FROM_PACKAGE              = 1
   }
   tags = var.tags
 }
@@ -91,7 +92,8 @@ module "backend_app" {
   linux_fx_version       = "NODE|20-lts"
   vnet_route_all_enabled = true
   app_settings = {
-    APPINSIGHTS_INSTRUMENTATIONKEY = module.backend_app_insights.instrumentation_key
+    APPINSIGHTS_INSTRUMENTATIONKEY        = module.backend_app_insights.instrumentation_key
+    APPLICATIONINSIGHTS_CONNECTION_STRING = module.backend_app_insights.connection_string
     #COSMOSDB_CONN_STRING           = module.cosmosdb.connection_strings[0]
     STORAGE_ACCOUNT_CONN_STRING = module.storage.primary_connection_string
     WEBSITE_RUN_FROM_PACKAGE    = 1
